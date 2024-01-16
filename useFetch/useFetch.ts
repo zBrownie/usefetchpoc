@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Api } from "../Api/fetch";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Api } from "../../Api/fetch";
 import { TData, TError, THookReturn, TStatus } from "./types";
 
 export const useFetch = <T = object>(
@@ -11,8 +11,6 @@ export const useFetch = <T = object>(
   const [error, setError] = useState<TError>(null);
   const [data, setData] = useState<TData<T>>(null);
 
-  const apiUrl = useRef<string>(url);
-
   const memoData = useMemo(() => data, [data]);
 
   const callApi = useCallback(
@@ -21,9 +19,9 @@ export const useFetch = <T = object>(
         setStatus("loading");
         setError(null);
 
-        apiUrl.current = secondUrl ? secondUrl : url;
+        const apiUrl = secondUrl ? secondUrl : url;
 
-        const response = await Api<T>(apiUrl.current, options);
+        const response = await Api<T>(apiUrl, options);
 
         if (response.error && !response.data) {
           throw new Error(String(response.error));
